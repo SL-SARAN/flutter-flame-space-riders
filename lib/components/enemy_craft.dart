@@ -5,7 +5,6 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
-import 'package:space_riders/components/explosion.dart';
 import 'package:space_riders/components/laser.dart';
 import 'package:space_riders/components/player.dart';
 import 'package:space_riders/my_game.dart';
@@ -53,7 +52,7 @@ class EnemyCraft extends SpriteComponent
       _flashEffect();
       if (_health-- == 0) {
         removeFromParent();
-        _flashOnDestruction();
+        game.explosionOnDestruction(position.clone());
         game.incrementScore(2);
       }
       other.removeFromParent();
@@ -65,13 +64,12 @@ class EnemyCraft extends SpriteComponent
   void _flashEffect() {
     final ColorEffect colorFlash = ColorEffect(
       Colors.black,
-      EffectController(duration: 0.05, alternate: true, curve: Curves.easeInOut),
+      EffectController(
+        duration: 0.05,
+        alternate: true,
+        curve: Curves.easeInOut,
+      ),
     );
     add(colorFlash);
-  }
-
-  void _flashOnDestruction() {
-    final Explosion explosion = Explosion(position: position.clone());
-    game.add(explosion);
   }
 }

@@ -7,6 +7,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:space_riders/components/background.dart';
 import 'package:space_riders/components/enemy_spawner.dart';
+import 'package:space_riders/components/explosion.dart';
 import 'package:space_riders/components/knob.dart';
 import 'package:space_riders/components/pause_resume_button.dart';
 import 'package:space_riders/components/player.dart';
@@ -20,6 +21,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
   late EnemySpawner _spaceCraftSpawner;
   late PauseResumeButton pauseResumeButton;
   late TextComponent _scoreText;
+  late Explosion explosion;
 
   int health = 5;
   int _score = 0;
@@ -84,6 +86,11 @@ class MyGame extends FlameGame with HasCollisionDetection {
   void _createEnemyCraftSpawner() async {
     _spaceCraftSpawner = EnemySpawner();
     await add(_spaceCraftSpawner);
+  }
+
+  void explosionOnDestruction(Vector2 position) {
+    explosion = Explosion(position: position);
+    add(explosion);
   }
 
   void _pauseButton() {
