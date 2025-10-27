@@ -4,16 +4,18 @@ import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flutter/material.dart';
+import 'package:flame/extensions.dart';
+import 'package:flutter/material.dart' hide Image;
 import 'package:space_riders/components/laser.dart';
 import 'package:space_riders/components/player.dart';
 import 'package:space_riders/my_game.dart';
 
-class EnemyCraft extends SpriteComponent
+class EnemyCraft extends SpriteAnimationComponent
     with HasGameReference<MyGame>, CollisionCallbacks {
   final Random _random = Random();
   late Vector2 _velocity;
   late int _health;
+  final int _noOfEnemyShips = 4;
 
   EnemyCraft({required super.position}) : super(size: Vector2(50, 50)) {
     _velocity = _velocityGenerator();
@@ -22,8 +24,19 @@ class EnemyCraft extends SpriteComponent
 
   @override
   FutureOr<void> onLoad() async {
-    int imageNum = _random.nextInt(6) + 1;
-    sprite = await game.loadSprite("enemy$imageNum.png");
+    int imageNum = _random.nextInt(_noOfEnemyShips) + 1;
+    // sprite = await game.loadSprite("enemy$imageNum.png");
+    Image spriteSheet = await game.images.load("enemysprite$imageNum.png");
+    final double spriteFramewidth = spriteSheet.width / 5;
+    final double spriteHeight = spriteSheet.height + 0.0;
+    animation = SpriteAnimation.fromFrameData(
+      spriteSheet,
+      SpriteAnimationData.sequenced(
+        amount: 5,
+        stepTime: 0.2,
+        textureSize: Vector2(spriteFramewidth, spriteHeight),        
+      ),
+    );
     add(RectangleHitbox());
     return super.onLoad();
   }
@@ -34,7 +47,6 @@ class EnemyCraft extends SpriteComponent
     if (position.y > game.size.x) {
       removeFromParent();
     }
-
     super.update(dt);
   }
 
@@ -45,7 +57,8 @@ class EnemyCraft extends SpriteComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other is Player) {
-      game.health--;
+      game.hitDamage++;
+      game.healthBar.updateHealthBar(game.hitDamage);
       removeFromParent();
     }
     if (other is Laser) {

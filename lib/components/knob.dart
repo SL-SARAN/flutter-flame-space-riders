@@ -10,7 +10,7 @@ class Knob extends SpriteComponent with HasGameReference<MyGame>, TapCallbacks {
     required super.position,
     required this.anch,
     required this.direction,
-  }) : super(size: Vector2(40, 40));
+  }) : super(size: Vector2(64, 64));
   final String path;
   final Anchor anch;
   final String direction;

@@ -5,7 +5,7 @@ import 'package:flame/events.dart';
 import 'package:space_riders/my_game.dart';
 
 class Shoot extends SpriteComponent with HasGameReference<MyGame>, TapCallbacks {
-  Shoot({required super.position}) : super(size: Vector2(64, 50));
+  Shoot({required super.position}) : super(size: Vector2(100, 85));
 
   @override
   FutureOr<void> onLoad() async {

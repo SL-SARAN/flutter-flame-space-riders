@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:space_riders/components/background.dart';
 import 'package:space_riders/components/enemy_spawner.dart';
 import 'package:space_riders/components/explosion.dart';
+import 'package:space_riders/components/health_bar.dart';
 import 'package:space_riders/components/knob.dart';
 import 'package:space_riders/components/pause_resume_button.dart';
 import 'package:space_riders/components/player.dart';
@@ -21,9 +22,10 @@ class MyGame extends FlameGame with HasCollisionDetection {
   late EnemySpawner _spaceCraftSpawner;
   late PauseResumeButton pauseResumeButton;
   late TextComponent _scoreText;
-  late Explosion explosion;
+  late Explosion _explosion;
+  late HealthBar healthBar;
 
-  int health = 5;
+  int hitDamage = 1;
   int _score = 0;
   double get safeArea => (size.y * 0.1).clamp(60.0, 120.0);
 
@@ -41,9 +43,9 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   @override
   void update(double dt) {
-    // if (health == 0) {
-    //   game.pauseEngine();
-    // }
+    if (hitDamage == 7) {
+      pauseEngine();
+    }
     super.update(dt);
   }
 
@@ -54,6 +56,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
     _createEnemyCraftSpawner();
     _pauseButton();
     _displayScoreText();
+    _createHealthBar();
   }
 
   void _createPlayer() async {
@@ -69,13 +72,13 @@ class MyGame extends FlameGame with HasCollisionDetection {
   void _createKnob() async {
     leftKnob = Knob(
       path: "lb.png",
-      position: Vector2(size.x * 0.4, size.y - safeArea),
+      position: Vector2(size.x * 0.35, size.y - safeArea),
       anch: Anchor.center,
       direction: "left",
     );
     rightKnob = Knob(
       path: "rb.png",
-      position: Vector2(size.x * 0.6, size.y - safeArea),
+      position: Vector2(size.x * 0.65, size.y - safeArea),
       anch: Anchor.center,
       direction: "right",
     );
@@ -89,8 +92,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
   }
 
   void explosionOnDestruction(Vector2 position) {
-    explosion = Explosion(position: position);
-    add(explosion);
+    _explosion = Explosion(position: position);
+    add(_explosion);
   }
 
   void _pauseButton() {
@@ -118,5 +121,10 @@ class MyGame extends FlameGame with HasCollisionDetection {
       EffectController(alternate: true, duration: 0.2, curve: Curves.easeInOut),
     );
     _scoreText.add(scaleEffect);
+  }
+
+  void _createHealthBar() {
+    healthBar = HealthBar();
+    add(healthBar);
   }
 }
