@@ -15,6 +15,7 @@ import 'package:space_riders/components/player.dart';
 import 'package:space_riders/components/shoot.dart';
 
 class MyGame extends FlameGame with HasCollisionDetection {
+  late Background _background;
   late Player player;
   late Shoot shootButton;
   late Knob leftKnob;
@@ -25,9 +26,11 @@ class MyGame extends FlameGame with HasCollisionDetection {
   late Explosion _explosion;
   late HealthBar healthBar;
 
-  int hitDamage = 1;
-  int _score = 0;
+  late int hitDamage;
+  late int _score;
   double get safeArea => (size.y * 0.1).clamp(60.0, 120.0);
+
+  int get score => _score;
 
   MyGame() {
     pauseEngine();
@@ -36,20 +39,24 @@ class MyGame extends FlameGame with HasCollisionDetection {
   @override
   FutureOr<void> onLoad() async {
     await Flame.device.setLandscape();
-    await add(Background());
-    startGame();
+    _startGame();
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
     if (hitDamage == 7) {
+      overlays.add("RestartMenu");
       pauseEngine();
     }
     super.update(dt);
   }
 
-  void startGame() {
+  void _startGame() {
+    hitDamage = 1;
+    _score = 0;
+
+    _initializeBackground();
     _createPlayer();
     _createShootButton();
     _createKnob();
@@ -57,6 +64,19 @@ class MyGame extends FlameGame with HasCollisionDetection {
     _pauseButton();
     _displayScoreText();
     _createHealthBar();
+  }
+
+  Future<void> restartGame() async {
+    removeAll(children.whereType<PositionComponent>().toList());
+
+    _startGame();
+    await Future.delayed(Durations.medium1);
+    resumeEngine();
+  }
+
+  void _initializeBackground() {
+    _background = Background();
+    add(_background);
   }
 
   void _createPlayer() async {
@@ -105,6 +125,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
     _scoreText = TextComponent(
       text: "$_score",
       position: Vector2(size.x / 2, size.y * 0.1),
+      textRenderer: TextPaint(style: TextStyle(fontFamily: "PixelFont", fontSize: 35.0)),
     );
     add(_scoreText);
   }

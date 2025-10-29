@@ -7,14 +7,20 @@ import 'package:space_riders/my_game.dart';
 
 void main() {
   runApp(
-    GameWidget<MyGame>.controlled(
-      gameFactory: MyGame.new,
-      overlayBuilderMap: {
-        "HomePage": (_, game) => HomePage(game: game),
-        "PauseMenu": (_, game) => PauseMenu(game: game),
-        "RestartMenu": (_, game) => HomeRestartMenu(game: game),
-      },
-      initialActiveOverlays: ["RestartMenu"],
+    MaterialApp(
+      theme: ThemeData(
+        fontFamily: "PixelFont",
+        useMaterial3: false,
+      ),
+      home: GameWidget<MyGame>.controlled(
+        gameFactory: MyGame.new,
+        overlayBuilderMap: {
+          "HomePage": (_, game) => HomePage(game: game),
+          "PauseMenu": (_, game) => PauseMenu(game: game),
+          "RestartMenu": (_, game) => HomeRestartMenu(game: game),
+        },
+        initialActiveOverlays: ["HomePage"],
+      ),
     ),
   );
 }

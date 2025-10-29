@@ -20,9 +20,10 @@ class HomePage extends StatelessWidget {
                 "SPACE RIDERS",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 50.0,
+                  fontSize: 60.0,
+                  letterSpacing: 4,
                   shadows: [
-                    Shadow(color: Colors.white, blurRadius: 25),
+                    Shadow(color: Colors.white, blurRadius: 15),
                     Shadow(
                       color: const Color.fromARGB(255, 23, 179, 246),
                       blurRadius: 25,
@@ -46,7 +47,7 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.black,
                       letterSpacing: 4,
-                      fontSize: 25,
+                      fontSize: 35,
                     ),
                   ),
                 ],
@@ -75,7 +76,7 @@ class HomePage extends StatelessWidget {
                             style: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5),
                               wordSpacing: 2,
-                              fontSize: 16,
+                              fontSize: 26,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

@@ -31,7 +31,7 @@ class PauseMenu extends StatelessWidget {
                   "GAME PAUSED",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 25,
+                    fontSize: 35,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 4,
                     shadows: [
@@ -52,6 +52,7 @@ class PauseMenu extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
+                      fontSize: 25.0,
                       letterSpacing: 4,
                     ),
                   ),
