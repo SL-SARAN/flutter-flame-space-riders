@@ -8,6 +8,7 @@ import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:space_riders/components/laser.dart';
 import 'package:space_riders/components/player.dart';
+import 'package:space_riders/managers/audio_manager.dart';
 import 'package:space_riders/my_game.dart';
 
 class EnemyCraft extends SpriteAnimationComponent
@@ -19,13 +20,12 @@ class EnemyCraft extends SpriteAnimationComponent
 
   EnemyCraft({required super.position}) : super(size: Vector2(50, 50)) {
     _velocity = _velocityGenerator();
-    _health = 3;
+    _health = 2;
   }
 
   @override
-  FutureOr<void> onLoad() async {
+  Future<void> onLoad() async {
     int imageNum = _random.nextInt(_noOfEnemyShips) + 1;
-    // sprite = await game.loadSprite("enemy$imageNum.png");
     Image spriteSheet = await game.images.load("enemysprite$imageNum.png");
     final double spriteFramewidth = spriteSheet.width / 5;
     final double spriteHeight = spriteSheet.height + 0.0;
@@ -55,21 +55,21 @@ class EnemyCraft extends SpriteAnimationComponent
   }
 
   @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    if (other is Player) {
-      game.hitDamage++;
-      game.healthBar.updateHealthBar(game.hitDamage);
-      removeFromParent();
-    }
+  Future<void> onCollision(Set<Vector2> intersectionPoints, PositionComponent other) async {
     if (other is Laser) {
       _flashEffect();
       if (_health-- == 0) {
+        AudioManager.playExplosion();
         removeFromParent();
-        game.explosionOnDestruction(position.clone());
+        await game.explosionOnDestruction(position.clone());
         game.incrementScore(2);
       }
       other.removeFromParent();
       game.incrementScore(1);
+    } else if (other is Player) {
+      game.hitDamage++;
+      game.healthBar.updateHealthBar(game.hitDamage);
+      removeFromParent();
     }
     super.onCollision(intersectionPoints, other);
   }

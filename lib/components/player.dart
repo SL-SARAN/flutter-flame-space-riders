@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:space_riders/components/laser.dart';
+import 'package:space_riders/managers/audio_manager.dart';
 import 'package:space_riders/my_game.dart';
 
 class Player extends SpriteComponent with HasGameReference<MyGame> {
@@ -62,5 +63,6 @@ class Player extends SpriteComponent with HasGameReference<MyGame> {
         position: Vector2(position.clone().x - 15, position.clone().y - 20),
       ),
     );
+    AudioManager.playFire();
   }
 }

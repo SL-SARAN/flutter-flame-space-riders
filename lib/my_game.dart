@@ -13,6 +13,7 @@ import 'package:space_riders/components/knob.dart';
 import 'package:space_riders/components/pause_resume_button.dart';
 import 'package:space_riders/components/player.dart';
 import 'package:space_riders/components/shoot.dart';
+import 'package:space_riders/managers/audio_manager.dart';
 
 class MyGame extends FlameGame with HasCollisionDetection {
   late Background _background;
@@ -37,6 +38,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   @override
   FutureOr<void> onLoad() async {
+    await super.onLoad();
     await Flame.device.setLandscape();
     await Flame.images.loadAll([
       "background.png",
@@ -64,8 +66,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
       "health_bar6.png",
       "health_bar7.png",
     ]);
+    
     _startGame();
-    return super.onLoad();
   }
 
   @override
@@ -77,18 +79,43 @@ class MyGame extends FlameGame with HasCollisionDetection {
     super.update(dt);
   }
 
-  void _startGame() {
+  @override
+  void lifecycleStateChange(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+
+      case AppLifecycleState.detached:
+        AudioManager.pauseMusic();
+        break;
+      case AppLifecycleState.resumed:
+        AudioManager.resumeMusic();
+        break;
+      case AppLifecycleState.hidden:
+        AudioManager.pauseMusic();
+        break;
+    }
+    super.lifecycleStateChange(state);
+  }
+
+  Future<void> _startGame() async {
     hitDamage = 1;
     _score = 0;
 
-    _initializeBackground();
-    _createPlayer();
-    _createShootButton();
-    _createKnob();
-    _createEnemyCraftSpawner();
-    _pauseButton();
-    _displayScoreText();
-    _createHealthBar();
+    await _initializeBackground();
+    await _loadMusics();
+    await _createPlayer();
+    await _createShootButton();
+    await _createKnob();
+    await _createEnemyCraftSpawner();
+    await _pauseButton();
+    await _displayScoreText();
+    await _createHealthBar();
+  }
+
+  Future<void> _loadMusics() async {
+    await AudioManager.initializeMusic();
+    await AudioManager.playMusic();
   }
 
   Future<void> restartGame() async {
@@ -99,22 +126,22 @@ class MyGame extends FlameGame with HasCollisionDetection {
     resumeEngine();
   }
 
-  void _initializeBackground() {
+  Future<void> _initializeBackground() async {
     _background = Background();
-    add(_background);
+    await add(_background);
   }
 
-  void _createPlayer() async {
+  Future<void> _createPlayer() async {
     player = Player(size: size * 0.1);
     await add(player);
   }
 
-  void _createShootButton() async {
+  Future<void> _createShootButton() async {
     shootButton = Shoot(position: Vector2(size.x * 0.8, size.y - safeArea));
     await add(shootButton);
   }
 
-  void _createKnob() async {
+  Future<void> _createKnob() async {
     leftKnob = Knob(
       path: "left1.png",
       position: Vector2(size.x * 0.20, size.y - safeArea),
@@ -131,22 +158,22 @@ class MyGame extends FlameGame with HasCollisionDetection {
     await add(rightKnob);
   }
 
-  void _createEnemyCraftSpawner() async {
+  Future<void> _createEnemyCraftSpawner() async {
     _spaceCraftSpawner = EnemySpawner();
     await add(_spaceCraftSpawner);
   }
 
-  void explosionOnDestruction(Vector2 position) {
+  Future<void> explosionOnDestruction(Vector2 position) async {
     _explosion = Explosion(position: position);
-    add(_explosion);
+    await add(_explosion);
   }
 
-  void _pauseButton() {
+  Future<void> _pauseButton() async {
     pauseResumeButton = PauseResumeButton();
-    add(pauseResumeButton);
+    await add(pauseResumeButton);
   }
 
-  void _displayScoreText() {
+  Future<void> _displayScoreText() async {
     _scoreText = TextComponent(
       text: "$_score",
       position: Vector2(size.x / 2, size.y * 0.1),
@@ -154,7 +181,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
         style: TextStyle(fontFamily: "PixelFont", fontSize: 35.0),
       ),
     );
-    add(_scoreText);
+    await add(_scoreText);
   }
 
   void incrementScore(int amount) {
@@ -163,16 +190,16 @@ class MyGame extends FlameGame with HasCollisionDetection {
     _scorePopEffect();
   }
 
-  void _scorePopEffect() {
+  Future<void> _scorePopEffect() async {
     final ScaleEffect scaleEffect = ScaleEffect.by(
       Vector2.all(1.3),
       EffectController(alternate: true, duration: 0.2, curve: Curves.easeInOut),
     );
-    _scoreText.add(scaleEffect);
+    await _scoreText.add(scaleEffect);
   }
 
-  void _createHealthBar() {
+  Future<void> _createHealthBar() async {
     healthBar = HealthBar();
-    add(healthBar);
+    await add(healthBar);
   }
 }
