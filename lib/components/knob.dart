@@ -8,25 +8,25 @@ class Knob extends SpriteComponent with HasGameReference<MyGame>, TapCallbacks {
   Knob({
     required this.path,
     required super.position,
-    required this.anch,
+    required super.anchor,
     required this.direction,
   }) : super(size: Vector2(64, 64));
   final String path;
-  final Anchor anch;
   final String direction;
 
   @override
   FutureOr<void> onLoad() async {
     sprite = await game.loadSprite(path);
-    anchor = anch;
   }
 
   @override
-  void onTapDown(TapDownEvent event) {
+  Future<void> onTapDown(TapDownEvent event) async {
     if (direction == "left") {
+      sprite = await game.loadSprite("left2.png");
       game.player.moveLeft(100);
     }
     if (direction == "right") {
+      sprite = await game.loadSprite("right2.png");
       game.player.moveRight(100);
     }
 
@@ -34,7 +34,13 @@ class Knob extends SpriteComponent with HasGameReference<MyGame>, TapCallbacks {
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
+  Future<void> onTapUp(TapUpEvent event) async {
+    if (direction == "left") {
+      sprite = await game.loadSprite("left1.png");
+    }
+    if (direction == "right") {
+      sprite = await game.loadSprite("right1.png");
+    }
     game.player.stopMove();
     super.onTapUp(event);
   }

@@ -31,7 +31,6 @@ class MyGame extends FlameGame with HasCollisionDetection {
   double get safeArea => (size.y * 0.1).clamp(60.0, 120.0);
 
   int get score => _score;
-
   MyGame() {
     pauseEngine();
   }
@@ -39,6 +38,32 @@ class MyGame extends FlameGame with HasCollisionDetection {
   @override
   FutureOr<void> onLoad() async {
     await Flame.device.setLandscape();
+    await Flame.images.loadAll([
+      "background.png",
+      "left1.png",
+      "left2.png",
+      "right1.png",
+      "right2.png",
+      "player.png",
+      "resume.png",
+      "pause.png",
+      "laser.png",
+      "enemysprite1.png",
+      "enemysprite2.png",
+      "enemysprite3.png",
+      "enemysprite4.png",
+      "explosion1.png",
+      "explosion2.png",
+      "explosion3.png",
+      "explosion4.png",
+      "health_bar1.png",
+      "health_bar2.png",
+      "health_bar3.png",
+      "health_bar4.png",
+      "health_bar5.png",
+      "health_bar6.png",
+      "health_bar7.png",
+    ]);
     _startGame();
     return super.onLoad();
   }
@@ -85,21 +110,21 @@ class MyGame extends FlameGame with HasCollisionDetection {
   }
 
   void _createShootButton() async {
-    shootButton = Shoot(position: Vector2(size.x / 2, size.y - safeArea));
+    shootButton = Shoot(position: Vector2(size.x * 0.8, size.y - safeArea));
     await add(shootButton);
   }
 
   void _createKnob() async {
     leftKnob = Knob(
-      path: "lb.png",
-      position: Vector2(size.x * 0.35, size.y - safeArea),
-      anch: Anchor.center,
+      path: "left1.png",
+      position: Vector2(size.x * 0.20, size.y - safeArea),
+      anchor: Anchor.center,
       direction: "left",
     );
     rightKnob = Knob(
-      path: "rb.png",
-      position: Vector2(size.x * 0.65, size.y - safeArea),
-      anch: Anchor.center,
+      path: "right1.png",
+      position: Vector2(size.x * 0.30, size.y - safeArea),
+      anchor: Anchor.center,
       direction: "right",
     );
     await add(leftKnob);
@@ -125,7 +150,9 @@ class MyGame extends FlameGame with HasCollisionDetection {
     _scoreText = TextComponent(
       text: "$_score",
       position: Vector2(size.x / 2, size.y * 0.1),
-      textRenderer: TextPaint(style: TextStyle(fontFamily: "PixelFont", fontSize: 35.0)),
+      textRenderer: TextPaint(
+        style: TextStyle(fontFamily: "PixelFont", fontSize: 35.0),
+      ),
     );
     add(_scoreText);
   }

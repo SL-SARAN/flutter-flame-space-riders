@@ -9,19 +9,21 @@ class Shoot extends SpriteComponent with HasGameReference<MyGame>, TapCallbacks 
 
   @override
   FutureOr<void> onLoad() async {
-    sprite = await game.loadSprite("fireicon.png");
+    sprite = await game.loadSprite("shoot1.png");
     anchor = Anchor.center;
     return super.onLoad();
   }
 
   @override
-  void onTapDown(TapDownEvent event) {
+  Future<void> onTapDown(TapDownEvent event) async {
+    sprite = await game.loadSprite("shoot2.png");
     game.player.isShooting = true;
     super.onTapDown(event);
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
+  Future<void> onTapUp(TapUpEvent event) async {
+    sprite = await game.loadSprite("shoot1.png");
     game.player.isShooting = false;
     super.onTapUp(event);
   }
