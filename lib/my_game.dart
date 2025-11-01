@@ -144,13 +144,13 @@ class MyGame extends FlameGame with HasCollisionDetection {
   Future<void> _createKnob() async {
     leftKnob = Knob(
       path: "left1.png",
-      position: Vector2(size.x * 0.20, size.y - safeArea),
+      position: Vector2(size.x * 0.17, size.y - safeArea),
       anchor: Anchor.center,
       direction: "left",
     );
     rightKnob = Knob(
       path: "right1.png",
-      position: Vector2(size.x * 0.30, size.y - safeArea),
+      position: Vector2(size.x * 0.33, size.y - safeArea),
       anchor: Anchor.center,
       direction: "right",
     );
