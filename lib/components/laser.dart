@@ -10,6 +10,7 @@ class Laser extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     sprite = await game.loadSprite("laser.png");
     add(RectangleHitbox());
     return super.onLoad();

@@ -1,13 +1,21 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:space_riders/menus/home_page.dart';
 import 'package:space_riders/menus/home_restart_menu.dart';
 import 'package:space_riders/menus/pause_menu.dart';
 import 'package:space_riders/my_game.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+
   runApp(
     MaterialApp(
+      title: "Space Blitz",
       theme: ThemeData(fontFamily: "PixelFont", useMaterial3: false),
       home: GameWidget<MyGame>.controlled(
         loadingBuilder: (_) => BufferLoader(),
@@ -35,7 +43,7 @@ class BufferLoader extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.blue,
             border: Border.all(width: 3),
-            borderRadius: BorderRadius.circular(40.0)
+            borderRadius: BorderRadius.circular(40.0),
           ),
           constraints: BoxConstraints(maxWidth: 300, maxHeight: 300),
           padding: const EdgeInsets.all(30.0),

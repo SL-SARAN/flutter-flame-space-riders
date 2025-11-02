@@ -8,13 +8,13 @@ class PauseResumeButton extends ToggleButtonComponent
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     defaultSkin = SpriteComponent(sprite: await game.loadSprite("pause.png"));
     defaultSelectedSkin = SpriteComponent(
       sprite: await game.loadSprite("resume.png"),
     );
 
     onChangeState = _handleButtonState;
-    
     return super.onLoad();
   }
 

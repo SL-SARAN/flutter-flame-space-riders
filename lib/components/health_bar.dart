@@ -13,11 +13,12 @@ class HealthBar extends SpriteComponent with HasGameReference<MyGame> {
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     sprite = await game.loadSprite("health_bar1.png");
     return super.onLoad();
   }
 
-  Future<void> updateHealthBar(int health) async {
-    game.healthBar.sprite = await game.loadSprite("health_bar$health.png");
+  Future<Sprite> updatedHealthBar(int healthNum) async {
+    return await game.loadSprite("health_bar$healthNum.png");
   }
 }

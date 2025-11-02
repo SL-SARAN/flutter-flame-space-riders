@@ -16,6 +16,11 @@ import 'package:space_riders/components/shoot.dart';
 import 'package:space_riders/managers/audio_manager.dart';
 
 class MyGame extends FlameGame with HasCollisionDetection {
+
+  MyGame() {
+    pauseEngine();
+  }
+
   late Background _background;
   late Player player;
   late Shoot shootButton;
@@ -27,19 +32,15 @@ class MyGame extends FlameGame with HasCollisionDetection {
   late Explosion _explosion;
   late HealthBar healthBar;
 
-  late int hitDamage;
+  late int _hitDamage;
   late int _score;
   double get safeArea => (size.y * 0.1).clamp(60.0, 120.0);
 
   int get score => _score;
-  MyGame() {
-    pauseEngine();
-  }
 
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
-    await Flame.device.setLandscape();
     await Flame.images.loadAll([
       "background.png",
       "left1.png",
@@ -66,40 +67,41 @@ class MyGame extends FlameGame with HasCollisionDetection {
       "health_bar6.png",
       "health_bar7.png",
     ]);
-    
-    _startGame();
+    await _startGame();
+    return super.onLoad();
   }
 
   @override
-  void update(double dt) {
-    if (hitDamage == 7) {
+  FutureOr<void> update(double dt) {
+    if (_hitDamage == 7) {
       overlays.add("RestartMenu");
       pauseEngine();
     }
+    _background.size = Vector2(size.x + 20, size.y + 50); //bug fix
     super.update(dt);
   }
 
   @override
-  void lifecycleStateChange(AppLifecycleState state) {
+  Future<void> lifecycleStateChange(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
 
       case AppLifecycleState.detached:
-        AudioManager.pauseMusic();
+        await AudioManager.pauseMusic();
         break;
       case AppLifecycleState.resumed:
-        AudioManager.resumeMusic();
+        await AudioManager.resumeMusic();
         break;
       case AppLifecycleState.hidden:
-        AudioManager.pauseMusic();
+        await AudioManager.pauseMusic();
         break;
     }
     super.lifecycleStateChange(state);
   }
 
   Future<void> _startGame() async {
-    hitDamage = 1;
+    _hitDamage = 1;
     _score = 0;
 
     await _initializeBackground();
@@ -121,13 +123,13 @@ class MyGame extends FlameGame with HasCollisionDetection {
   Future<void> restartGame() async {
     removeAll(children.whereType<PositionComponent>().toList());
 
-    _startGame();
+    await _startGame();
     await Future.delayed(Durations.medium1);
     resumeEngine();
   }
 
   Future<void> _initializeBackground() async {
-    _background = Background();
+    _background = Background(size: Vector2(size.x + 20, size.y + 50));
     await add(_background);
   }
 
@@ -201,5 +203,10 @@ class MyGame extends FlameGame with HasCollisionDetection {
   Future<void> _createHealthBar() async {
     healthBar = HealthBar();
     await add(healthBar);
+  }
+
+  Future<void> updateHealthBar() async {
+    _hitDamage++;
+    healthBar.sprite = await healthBar.updatedHealthBar(_hitDamage);
   }
 }

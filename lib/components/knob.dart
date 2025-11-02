@@ -16,7 +16,9 @@ class Knob extends SpriteComponent with HasGameReference<MyGame>, TapCallbacks {
 
   @override
   FutureOr<void> onLoad() async {
+    await super.onLoad();
     sprite = await game.loadSprite(path);
+    return super.onLoad();
   }
 
   @override

@@ -25,6 +25,7 @@ class EnemyCraft extends SpriteAnimationComponent
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     int imageNum = _random.nextInt(_noOfEnemyShips) + 1;
     Image spriteSheet = await game.images.load("enemysprite$imageNum.png");
     final double spriteFramewidth = spriteSheet.width / 5;
@@ -67,8 +68,7 @@ class EnemyCraft extends SpriteAnimationComponent
       other.removeFromParent();
       game.incrementScore(1);
     } else if (other is Player) {
-      game.hitDamage++;
-      game.healthBar.updateHealthBar(game.hitDamage);
+      game.updateHealthBar();
       removeFromParent();
     }
     super.onCollision(intersectionPoints, other);

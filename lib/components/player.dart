@@ -16,6 +16,7 @@ class Player extends SpriteComponent with HasGameReference<MyGame> {
 
   @override
   FutureOr<void> onLoad() async {
+    await super.onLoad();
     sprite = await game.loadSprite("player.png");
     anchor = Anchor.center;
     position = Vector2(game.size.x / 2, game.size.y - 2 * game.safeArea);

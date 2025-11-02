@@ -9,6 +9,7 @@ class Explosion extends SpriteAnimationComponent with HasGameReference<MyGame> {
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     animation = SpriteAnimation.spriteList(
       [for (int i = 1; i <= 4; i++) await Sprite.load("explosion$i.png")],
       stepTime: 0.1,
@@ -17,7 +18,6 @@ class Explosion extends SpriteAnimationComponent with HasGameReference<MyGame> {
     animationTicker!.onComplete = () {
       removeFromParent();
     };
-
     return super.onLoad();
   }
 }
